@@ -29,7 +29,6 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
-
   final String title;
 
   @override
@@ -43,7 +42,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text("남은 할 일"),
@@ -55,22 +53,57 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             Row(
               children: [
-                Expanded(child: TextField(
+                Expanded(
+                    child: TextField(
                   controller: _todoController,
                 )),
-                ElevatedButton(onPressed: () {
-                  print(_todoController.text);
-                }, child: Text('추가')),
+                ElevatedButton(
+                    onPressed: () => _addTodo(Todo(_todoController.text)),
+                    child: Text('추가')),
               ],
             ),
             Expanded(
               child: ListView(
-                children: [],
-              ),
+                children: _items.map((todo) => _buildTodoItem(todo)).toList(),),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildTodoItem(Todo todo) {
+    return ListTile(
+      onTap: () => _toggleTodo(todo),
+      title: Text(todo.title,
+          style: todo.isDone
+              ? TextStyle(
+                  decoration: TextDecoration.lineThrough,
+                  fontStyle: FontStyle.italic)
+              : null),
+      trailing: IconButton(
+        icon: Icon(Icons.delete_forever),
+        onPressed: () => _deleteTodo(todo),
+      ),
+    );
+  }
+
+  void _addTodo(Todo todo) {
+    setState(() {
+      _items.add(todo);
+      _todoController.text = "";
+    });
+  }
+
+  void _deleteTodo(Todo todo) {
+    setState(() {
+      _items.remove(todo);
+    });
+  }
+
+  void _toggleTodo(Todo todo) {
+    setState(() {
+      todo.isDone = !todo.isDone;
+    });
   }
 }
