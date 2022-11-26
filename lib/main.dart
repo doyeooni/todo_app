@@ -89,10 +89,15 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _addTodo(Todo todo) {
-    setState(() {
-      _items.add(todo);
-      _todoController.text = "";
-    });
+    if(_todoController.text.trim().isEmpty) {
+      print("textfield is null");
+    }
+    else {
+      setState(() {
+        _items.add(todo);
+        _todoController.text = "";
+      });
+    }
   }
 
   void _deleteTodo(Todo todo) {
